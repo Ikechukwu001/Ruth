@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-export const runtime = "nodejs"; // important for some deployments
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function badRequest(message) {
