@@ -116,10 +116,10 @@ const services = [
   },
   {
     id: 7,
-    title: 'Evening Unwind',
+    title: 'Sensual Relaxation Massage',
     category: 'Slow-down ritual',
     description:
-      'An unhurried experience for those looking to step away from a busy day and enjoy a little more personal downtime.',
+      "A soothing and intimate massage experience designed to enhance relaxation, elevate mood, and provide a gentle, comforting touch.",
     image: '/RuthEleven.jpeg',
     icon: Moon,
     benefits: [

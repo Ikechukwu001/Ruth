@@ -6,7 +6,6 @@ import {
   addDoc,
   collection,
   getDocs,
-  orderBy,
   query,
   serverTimestamp,
 } from "firebase/firestore";
@@ -279,38 +278,52 @@ export default function ReviewsPage() {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  const fetchReviews = useCallback(async () => {
-    try {
-      setLoading(true);
+const fetchReviews = useCallback(async () => {
+  let timeoutId;
 
-      const reviewsQuery = query(
-        collection(db, REVIEWS_COLLECTION),
-        orderBy("createdAt", "desc")
-      );
+  try {
+    setLoading(true);
 
-      const snapshot = await getDocs(reviewsQuery);
+    // Don't rely on createdAt being present in every document.
+    // Sort the reviews in the browser after loading them.
+    const request = getDocs(collection(db, REVIEWS_COLLECTION));
 
-      const firestoreReviews = snapshot.docs.map((document) => ({
-        id: document.id,
-        ...document.data(),
-        __source: "db",
-      }));
+    const timeout = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => {
+        reject(
+          new Error("Loading reviews timed out. Check your Firebase connection.")
+        );
+      }, 12000);
+    });
 
-      setReviews(mergeAndSortReviews(firestoreReviews));
-    } catch (error) {
-      console.error("Error loading Firebase reviews:", error);
+    const snapshot = await Promise.race([request, timeout]);
 
-      setReviews(mergeAndSortReviews([]));
+    const firestoreReviews = snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data(),
+      __source: "db",
+    }));
 
-      setToast({
-        type: "error",
-        message:
-          "Could not load live reviews. Showing sample reviews instead.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    setReviews(mergeAndSortReviews(firestoreReviews));
+  } catch (error) {
+    console.error("Error loading Firebase reviews:", error);
+
+    // Keep the page usable if Firestore cannot be reached.
+    setReviews(mergeAndSortReviews([]));
+
+    setToast({
+      type: "error",
+      message:
+        error.message?.includes("timed out")
+          ? "Firebase took too long to respond. Check your connection and try refreshing."
+          : "Could not load live reviews. Showing sample reviews instead.",
+    });
+  } finally {
+    clearTimeout(timeoutId);
+    setLoading(false);
+  }
+}, []);
+
 
   useEffect(() => {
     fetchReviews();
