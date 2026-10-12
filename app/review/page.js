@@ -28,7 +28,7 @@ const placeholderReviews = [
     name: "Jordan K.",
     title: "Great for shoulder tension",
     message:
-      "Excellent pressure control and very respectful communication. My shoulders felt noticeably better.",
+      "Excellent pressure control, very respectful communication. My shoulders felt noticeably better.",
     rating: 5,
     created_at: "2024-03-28T16:40:00.000Z",
   },
