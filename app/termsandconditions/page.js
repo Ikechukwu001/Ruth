@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Terms & Conditions | Jenna’s Spa",
+  title: "Terms & Conditions | Ruthie Dora",
   description: "Terms and conditions for booking and services.",
 };
 
