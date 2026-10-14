@@ -757,7 +757,7 @@ function ReviewCard({ review }) {
 
           {isPlaceholder && (
             <span className="rounded-full border border-border bg-background/70 px-3 py-1 text-[10px] uppercase tracking-widest text-foreground/60">
-              Sample
+              Reviews
             </span>
           )}
         </div>
